@@ -21,11 +21,23 @@ void Date::checkdate()
 	}
 }
 
-Date::Date& operator+(int numberOfDays) const
+
+int Date::getYear()
+    {
+        return year;
+    }
+int Date::getMonth()
+    {
+        return month;
+    }
+int Date::getDay()
+    {
+        return day;
+    }
+
+Date& Date::operator+(int numberOfDays) const
 {
-
-
-	return 1;
+	day=day+numberOfDays;
+	checkdate();
+	return this;
 }
-
-
