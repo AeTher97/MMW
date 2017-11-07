@@ -42,7 +42,7 @@ int Date::getDay() const
 
 
 
-int operator- (const Date& firstDate,const Date&  secondDate){ return firstDate.date_to_days()-secondDate.date_to_days(); }
+int operator- (const Date& firstDate,const Date&  secondDate){ return date_to_days(firstDate)-date_to_days(secondDate); }
 
 Date& Date::operator= (const Date& new_date){
 
@@ -54,14 +54,14 @@ Date& Date::operator= (const Date& new_date){
 
 
 void Date::operator+= (int numberOfDays){
-    Date result = days_to_date(date_to_days()+numberOfDays);
+    Date result = days_to_date(date_to_days(*this)+numberOfDays);
     this->day=result.getDay();
     this->month=result.getMonth();
     this->year=result.getYear();
 }
 
 void Date::operator-= (int numberOfDays){
-    Date result = days_to_date(date_to_days()-numberOfDays);
+    Date result = days_to_date(date_to_days(*this)-numberOfDays);
     this->day=result.getDay();
     this->month=result.getMonth();
     this->year=result.getYear();
@@ -88,6 +88,13 @@ inline Date operator+ (int numberOfDays,Date date) {
     return date;
 }
 
+bool operator== (const Date& firstDate, const Date& secondDate){
+return date_to_days(firstDate)==date_to_days(secondDate);
+}
+bool operator!= (const Date& firstDate, const Date&  secondDate){
+    return date_to_days(firstDate)!=date_to_days(secondDate);
+}
+
 
 std::ostream& operator<< (std::ostream& stream, const Date& date)
 {
@@ -100,17 +107,17 @@ std::ostream& operator<< (std::ostream& stream, const Date& date)
     return stream;
 }
 
-int Date::date_to_days() const
+int date_to_days(const Date& date)
 {
     int i=0;
     short days_in_months[12];
     get_days_in_months_array(days_in_months);
-    int result = year*365;
-    for(i=0;i<month;i++)
+    int result = date.getYear()*365;
+    for(i=0;i<date.getMonth();i++)
     {
         result+=days_in_months[i];
     }
-    result+=day;
+    result+=date.getDay();
     return result;
 
 }

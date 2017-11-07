@@ -17,13 +17,12 @@ public:
      int getYear() const;
      int getMonth() const;
      int getDay() const;
-	 int date_to_days() const;
 
      friend int operator- (const Date& firstDate,const Date&  secondDate);
      void operator+= (int numberOfDays);
      void operator-= (int numberOfDays);
-     friend bool operator== (const Date& firstDate, const Date& secondDate){return firstDate.date_to_days()==secondDate.date_to_days();};
-     friend bool operator!= (const Date& firstDate, const Date&  secondDate){return firstDate.date_to_days()!=secondDate.date_to_days();};
+     friend bool operator== (const Date& firstDate, const Date& secondDate);
+     friend bool operator!= (const Date& firstDate, const Date&  secondDate);
      Date& operator= (const Date& _oldDate);
      friend std::ostream& operator<< (std::ostream& stream, const Date& date);
 
@@ -44,12 +43,10 @@ inline Date operator+ (int numberOfDays,Date date);
 
 
 
-
+int date_to_days(const Date& date);
 void get_days_in_months_array(short * days_in_months);
-
-
-
 Date days_to_date(int days);
+
 
 
 #endif
