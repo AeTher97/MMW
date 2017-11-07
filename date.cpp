@@ -1,4 +1,16 @@
 #include "date.hpp"
+#include "iomanip"
+#include <iostream>
+
+void get_days_in_months_array(short * days_in_months)
+{
+    int i;
+    short days_array[12]={31,28,31,30,31,30,31,31,30,31,30,31};
+    for(i=0;i<12;i++)
+        days_in_months[i]=days_array[i];
+
+}
+
 
 Date::Date(int _year, int _month, int _day)
 {
@@ -7,37 +19,124 @@ Date::Date(int _year, int _month, int _day)
 	day=_day;
 }
 
-void Date::checkdate()
-{
-	while(day>days_in_months[month-1])
-	{
-		day -= days_in_months[month - 1];
-		month++;
-	}
-	while(month>12)
-	{
-		month -= 12;
-		year++;
-	}
+Date::Date(const Date& date_old) {
+    this->year = date_old.getYear();
+    this->month = date_old.getMonth();
+    this -> day = date_old.getDay();
 }
 
 
-int Date::getYear()
+
+int Date::getYear() const
     {
         return year;
     }
-int Date::getMonth()
+int Date::getMonth() const
     {
         return month;
     }
-int Date::getDay()
+int Date::getDay() const
     {
         return day;
     }
 
-Date& Date::operator+(int numberOfDays) const
+
+
+int operator- (const Date& firstDate,const Date&  secondDate){ return firstDate.date_to_days()-secondDate.date_to_days(); }
+
+Date& Date::operator= (const Date& new_date){
+
+    day = new_date.getDay();
+    month = new_date.getMonth();
+    year = new_date.getYear();
+    return *this;
+}
+
+
+void Date::operator+= (int numberOfDays){
+    Date result = days_to_date(date_to_days()+numberOfDays);
+    this->day=result.getDay();
+    this->month=result.getMonth();
+    this->year=result.getYear();
+}
+
+void Date::operator-= (int numberOfDays){
+    Date result = days_to_date(date_to_days()-numberOfDays);
+    this->day=result.getDay();
+    this->month=result.getMonth();
+    this->year=result.getYear();
+}
+
+inline Date operator+(Date date,int numberOfDays){
+    date += numberOfDays;
+    return date;
+}
+
+inline Date operator-(Date date,int numberOfDays) {
+    date -= numberOfDays;
+    return date;
+}
+
+
+inline Date operator- (int numberOfDays, Date date) {
+    date -= numberOfDays;
+    return date;
+}
+
+inline Date operator+ (int numberOfDays,Date date) {
+    date+=numberOfDays;
+    return date;
+}
+
+
+std::ostream& operator<< (std::ostream& stream, const Date& date)
 {
-	day=day+numberOfDays;
-	checkdate();
-	return this;
+    stream <<  std::setfill('0') <<std::setw(4)<< date.getYear() << '-';
+    stream << std::setfill('0') << std::setw(2) << date.getMonth() << '-';
+    stream << std::setfill('0') << std::setw(2) << date.getDay();
+    if(date.getYear()<1970)
+        stream << " Date is from time before the epoch";
+
+    return stream;
+}
+
+int Date::date_to_days() const
+{
+    int i=0;
+    short days_in_months[12];
+    get_days_in_months_array(days_in_months);
+    int result = year*365;
+    for(i=0;i<month;i++)
+    {
+        result+=days_in_months[i];
+    }
+    result+=day;
+    return result;
+
+}
+
+
+Date days_to_date(int days)
+{
+    int i;
+    short days_in_months[12];
+    get_days_in_months_array(days_in_months);
+    int new_years=floor(days/365);
+    int new_months=0;
+    int new_days=0;
+
+    days -= new_years*365;
+    for(i=0;i<12;i++)
+    {
+        if(days>=days_in_months[i]) {
+            new_months++;
+            days -= days_in_months[i];
+        }
+        else
+            break;
+    }
+    new_days=days;
+
+    Date result = Date(new_years,new_months,new_days);
+    return result;
 }
