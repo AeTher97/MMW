@@ -67,26 +67,7 @@ void Date::operator-= (int numberOfDays){
     this->year=result.getYear();
 }
 
-inline Date operator+(Date date,int numberOfDays){
-    date += numberOfDays;
-    return date;
-}
 
-inline Date operator-(Date date,int numberOfDays) {
-    date -= numberOfDays;
-    return date;
-}
-
-
-inline Date operator- (int numberOfDays, Date date) {
-    date -= numberOfDays;
-    return date;
-}
-
-inline Date operator+ (int numberOfDays,Date date) {
-    date+=numberOfDays;
-    return date;
-}
 
 bool operator== (const Date& firstDate, const Date& secondDate){
 return date_to_days(firstDate)==date_to_days(secondDate);
@@ -113,9 +94,9 @@ int date_to_days(const Date& date)
     short days_in_months[12];
     get_days_in_months_array(days_in_months);
     int result = date.getYear()*365;
-    for(i=0;i<date.getMonth();i++)
+    for(i=1;i<date.getMonth();i++)
     {
-        result+=days_in_months[i];
+        result+=days_in_months[i-1];
     }
     result+=date.getDay();
     return result;
@@ -125,24 +106,31 @@ int date_to_days(const Date& date)
 
 Date days_to_date(int days)
 {
-    int i;
+    int i,new_years;
+    int new_months=1;
+    int new_days=0;
+
     short days_in_months[12];
     get_days_in_months_array(days_in_months);
-    int new_years=floor(days/365);
-    int new_months=0;
-    int new_days=0;
+    if(days%365!=0)
+        new_years=days/365;
+    else
+        new_years=days/365-1;
+
 
     days -= new_years*365;
     for(i=0;i<12;i++)
     {
-        if(days>=days_in_months[i]) {
+        if(days>days_in_months[i]) {
             new_months++;
             days -= days_in_months[i];
         }
         else
             break;
     }
-    new_days=days;
+    new_days+=days;
+    if(new_days == 0)
+        new_days =1;
 
     Date result = Date(new_years,new_months,new_days);
     return result;

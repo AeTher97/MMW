@@ -30,22 +30,34 @@ public:
 
 };
 
-
-inline Date operator+(Date date,int numberOfDays);
-
-inline Date operator-(Date date,int numberOfDays);
-
-inline Date operator- (int numberOfDays, Date date);
-
-inline Date operator+ (int numberOfDays,Date date);
-
-
-
-
-
 int date_to_days(const Date& date);
 void get_days_in_months_array(short * days_in_months);
 Date days_to_date(int days);
+
+
+inline Date operator+(Date date,int numberOfDays){
+    date += numberOfDays;
+    return date;
+}
+
+inline Date operator-(Date date,int numberOfDays) {
+    date -= numberOfDays;
+    return date;
+}
+
+
+inline Date operator- (int numberOfDays, Date date) {
+    date = days_to_date(numberOfDays-date_to_days(date));
+    return date;
+}
+
+inline Date operator+ (int numberOfDays,Date date) {
+    date+=numberOfDays;
+    return date;
+}
+
+
+
 
 
 
